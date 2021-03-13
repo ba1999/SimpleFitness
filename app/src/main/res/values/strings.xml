@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SimpleFitness</string>
+    <string name="success_response">Response : %1$s</string>
+    <string name="error_response">Error : %1$s</string>
+</resources>
