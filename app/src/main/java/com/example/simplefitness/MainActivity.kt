@@ -11,6 +11,8 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONException
 import org.json.JSONObject
+import splitties.alertdialog.alertDialog
+import splitties.alertdialog.okButton
 import splitties.toast.longToast
 import splitties.toast.toast
 
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                 Response.Listener {
                     parseJSONData(it)
                 }, Response.ErrorListener {
-            Log.i(TAG, getString(R.string.error_response, it.toString()))
+            dialogError(getString(R.string.error_internet_communication))
         })
 
         mRequestQueue.add(mStringRequest)
@@ -58,6 +60,15 @@ class MainActivity : AppCompatActivity() {
         } catch (e : JSONException) {
             e.printStackTrace()
             Log.e(TAG, getString(R.string.error_json_parsing))
+            dialogError(getString(R.string.error_json_parsing))
         }
+    }
+
+    private fun dialogError(message : String) {
+        alertDialog(title = getString(R.string.error_msg_title), message = message) {
+            okButton{
+                finish()
+            }
+        }.show()
     }
 }
