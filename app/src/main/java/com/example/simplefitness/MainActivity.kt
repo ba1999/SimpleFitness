@@ -9,7 +9,10 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONException
+import org.json.JSONObject
 import splitties.toast.longToast
+import splitties.toast.toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,11 +37,27 @@ class MainActivity : AppCompatActivity() {
     private fun getDataFromInternet() {
         val mStringRequest = StringRequest(Request.Method.GET, mURL,
                 Response.Listener {
-                    longToast(getString(R.string.success_response, it.toString()))
+                    parseJSONData(it)
                 }, Response.ErrorListener {
             Log.i(TAG, getString(R.string.error_response, it.toString()))
         })
 
         mRequestQueue.add(mStringRequest)
+    }
+
+    private fun parseJSONData(jsonString : String) {
+        try {
+            //response String zu einem JSON Objekt
+            val obj = JSONObject(jsonString)
+            //extrahieren des Objektes data
+            val dataObj = obj.getJSONObject("data")
+            //extraieren der Temperaturen (als Array) aus data
+            val tempArray = dataObj.getJSONArray("temp")
+
+            toast(getString(R.string.temperature, tempArray))
+        } catch (e : JSONException) {
+            e.printStackTrace()
+            Log.e(TAG, getString(R.string.error_json_parsing))
+        }
     }
 }
