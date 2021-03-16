@@ -2,8 +2,10 @@ package com.example.simplefitness
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -19,9 +21,13 @@ import splitties.toast.toast
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "MainActivity"
-    private val mURL = "https://run.mocky.io/v3/b3ac4913-3b8b-484b-b978-9b0405d8bfb1"
+    private val mURL = "http://draussenwetter.appspot.com/MCdata.json"
 
     private val btnLoad : Button by lazy{ findViewById(R.id.button_loadData) }
+    private val datatv : TextView by lazy{ findViewById(R.id.dataTV) }
+
+    private val mHandler : Handler by lazy { Handler() }
+    private lateinit var mRunnable : Runnable
 
     private val mRequestQueue : RequestQueue by lazy { Volley.newRequestQueue(applicationContext) }
 
@@ -29,9 +35,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var loading = false
+
         btnLoad.setOnClickListener {
             Log.i(TAG, "Button LadeDaten wurde gedrückt")
-            getDataFromInternet()
+            loading = !loading
+            btnLoad.text = if(loading) getString(R.string.stop_data)
+            else getString(R.string.load_data)
+            liveData(loading)
         }
 
     }
@@ -51,12 +62,10 @@ class MainActivity : AppCompatActivity() {
         try {
             //response String zu einem JSON Objekt
             val obj = JSONObject(jsonString)
-            //extrahieren des Objektes data
-            val dataObj = obj.getJSONObject("data")
-            //extraieren der Temperaturen (als Array) aus data
-            val tempArray = dataObj.getJSONArray("temp")
+            val pulse = obj.getInt("puls")
 
-            toast(getString(R.string.temperature, tempArray))
+            toast("Puls: $pulse")
+            datatv.text = pulse.toString()
         } catch (e : JSONException) {
             e.printStackTrace()
             Log.e(TAG, getString(R.string.error_json_parsing))
@@ -70,5 +79,17 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }.show()
+    }
+
+    private fun liveData(loading : Boolean) {
+        if (loading) {
+            mRunnable = Runnable {
+                mHandler.postDelayed(mRunnable, 3 * 1000)
+                getDataFromInternet()
+            }
+            mHandler.postDelayed(mRunnable, 100)
+        } else {
+            mHandler.removeCallbacks(mRunnable)
+        }
     }
 }
