@@ -1,6 +1,7 @@
 package com.example.simplefitness
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private val btnLoad : Button by lazy{ findViewById(R.id.button_loadData) }
     private val datatv : TextView by lazy{ findViewById(R.id.dataTV) }
+    private val btnGraph : Button by lazy{ findViewById(R.id.graphbtn) }
 
     private val mHandler : Handler by lazy { Handler() }
     private lateinit var mRunnable : Runnable
@@ -50,6 +52,12 @@ class MainActivity : AppCompatActivity() {
             btnLoad.text = if(loading) getString(R.string.stop_data)
             else getString(R.string.load_data)
             liveData(loading)
+        }
+
+        btnGraph.setOnClickListener{
+            Log.i(TAG, "Button GraphActivity wurde gedrückt")
+            val intent = Intent(applicationContext, GraphDataActivity::class.java)
+            startActivity(intent)
         }
 
     }
