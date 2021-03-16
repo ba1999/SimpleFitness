@@ -12,4 +12,5 @@
 
     <string name="error_file_not_found">File konnte nicht geöffnet werden.</string>
     <string name="error_saving_file">Beim Speichern in der Datei ist ein Fehler aufgetreten.</string>
+    <string name="graph_title">Ihre Pulsdaten</string>
 </resources>
