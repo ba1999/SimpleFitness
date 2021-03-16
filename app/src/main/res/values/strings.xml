@@ -9,4 +9,7 @@
 
     <string name="load_data">Lade Daten</string>
     <string name="stop_data">Stoppe Ladevorgang</string>
+
+    <string name="error_file_not_found">File konnte nicht geöffnet werden.</string>
+    <string name="error_saving_file">Beim Speichern in der Datei ist ein Fehler aufgetreten.</string>
 </resources>
